@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class IndexCell {
 
@@ -30,18 +31,18 @@ public class IndexCell {
     }
 
     public void calculate(){
-        for(Particle particle : particles){
-            output.put(particle, calculateNeighbours(particle));
-        }
+        output = particles.stream()
+                .collect(Collectors.toMap(p-> p, p->calculateNeighbours(p)));
     }
 
     private List<Particle> calculateNeighbours(Particle particle){
         //traer celdas vecinas
         //por cada celda traer particulas
         //filtrar las particulas que esten a menos de rc de la particle
-
-        //return particle.getNeighbourCells().stream()
-        //        .map();
-        return null;
+        return particle.getCell().getNeighbours().stream()
+                .map(Cell::getParticles)
+                .flatMap(List::stream)
+                .filter(p -> particle.isCloseEnough(p, rc))
+                .collect(Collectors.toList());
     }
 }
