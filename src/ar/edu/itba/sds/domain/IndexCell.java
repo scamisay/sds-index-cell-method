@@ -13,6 +13,7 @@ public class IndexCell {
     private Double rc;
     private List<Particle> particles = new ArrayList<>();
     private List<Cell> cells = new ArrayList<>();
+    private Cell[][] environment;
     private Map<Particle, List<Particle>> output = new HashMap<>();
 
     public IndexCell(Integer m, Integer l, Double rc, List<Particle> particles) {
@@ -26,7 +27,7 @@ public class IndexCell {
 
     private void initializeEnvironment() {
         //creo cells
-
+        environment = new Cell[M][M];
         //le asigno particles a cada cell
     }
 
@@ -35,10 +36,12 @@ public class IndexCell {
                 .collect(Collectors.toMap(p-> p, p->calculateNeighbours(p)));
     }
 
+    /**
+     * traer celdas vecinas
+     * por cada celda traer particulas
+     * filtrar las particulas que esten a menos de rc de la particle
+     */
     private List<Particle> calculateNeighbours(Particle particle){
-        //traer celdas vecinas
-        //por cada celda traer particulas
-        //filtrar las particulas que esten a menos de rc de la particle
         return particle.getCell().getNeighbours().stream()
                 .map(Cell::getParticles)
                 .flatMap(List::stream)

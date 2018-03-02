@@ -26,4 +26,8 @@ public class Cell {
     public void setNeigbours(List<Cell> neigbours) {
         this.neigbours = neigbours;
     }
+
+    public boolean isInside(Particle particle){
+        return  rangeX.isInRange(particle.getX()) && rangeY.isInRange(particle.getY());
+    }
 }
