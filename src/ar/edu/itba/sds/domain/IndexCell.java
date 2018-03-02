@@ -36,7 +36,12 @@ public class IndexCell {
     }
 
     private List<Particle> calculateNeighbours(Particle particle){
-        //seleccionar las areas
-        return new ArrayList<>();
+        //traer celdas vecinas
+        //por cada celda traer particulas
+        //filtrar las particulas que esten a menos de rc de la particle
+
+        //return particle.getNeighbourCells().stream()
+        //        .map();
+        return null;
     }
 }

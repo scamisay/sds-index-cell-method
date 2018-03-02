@@ -2,6 +2,8 @@ package ar.edu.itba.sds.domain;
 
 import com.sun.org.apache.regexp.internal.RE;
 
+import java.util.List;
+
 public class Particle {
 
     private Double x;
@@ -34,5 +36,9 @@ public class Particle {
 
     public Double distanceBorderToBorder(Particle particle){
         return distanceCenterToCenter(particle) - (getRadix() + particle.getRadix());
+    }
+
+    public List<Particle> getNeighbourCells() {
+        return null;
     }
 }
