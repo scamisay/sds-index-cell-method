@@ -5,18 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class IndexCell {
 
     private Integer M;
-    private Integer L;
+    private Double L;
     private Double rc;
     private List<Particle> particles = new ArrayList<>();
-    private List<Cell> cells = new ArrayList<>();
     private Cell[][] environment;
     private Map<Particle, List<Particle>> output = new HashMap<>();
 
-    public IndexCell(Integer m, Integer l, Double rc, List<Particle> particles) {
+    public IndexCell(Integer m, Double l, Double rc, List<Particle> particles) {
         M = m;
         L = l;
         this.rc = rc;
@@ -28,12 +28,35 @@ public class IndexCell {
     private void initializeEnvironment() {
         //creo cells
         environment = new Cell[M][M];
-        //le asigno particles a cada cell
+        Double offset = L/M;
+
+        //calculo rangos del environment
+        List<Range> ranges = DoubleStream.iterate(0., d -> d + offset)
+                .limit(M).boxed()
+                .map(d -> new Range(d, d+ offset))
+                .collect(Collectors.toList());
+
+        //inicializo environment con celdas y asigno las particulas a cada celda
+        for (Integer x = 0; x < M; x++) {
+            for (Integer y = 0; y < M; y++) {
+                Range rangex = ranges.get(x);
+                Range rangey = ranges.get(y);
+
+                Cell cell = new Cell(rangex, rangey);
+                environment[x][y] = cell;
+
+                particles.stream()
+                        .filter(cell::isInside)
+                        .forEach(cell::addParticle);
+            }
+        }
+
+        //todo: definir vecinos para cada celda
     }
 
     public void calculate(){
         output = particles.stream()
-                .collect(Collectors.toMap(p-> p, p->calculateNeighbours(p)));
+                .collect(Collectors.toMap(p->p, this::calculateNeighbours));
     }
 
     /**

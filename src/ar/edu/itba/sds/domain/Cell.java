@@ -10,9 +10,19 @@ public class Cell {
     private List<Cell> neigbours = new ArrayList<>();
     private List<Particle> particles = new ArrayList<>();
 
-    public Cell(List<Particle> particles) {
-        this.particles = particles;
-        this.particles.forEach( p -> p.setCell(this));
+    public Cell(Range rangeX, Range rangeY) {
+        this.rangeX = rangeX;
+        this.rangeY = rangeY;
+    }
+
+   /*todo: eliminar esto despues del test del main
+   public Cell(List<Particle> particles) {
+        setParticles(particles);
+    }*/
+
+    public void addParticle(Particle particle){
+        this.particles.add(particle);
+        particle.setCell(this);
     }
 
     public List<Particle> getParticles() {
@@ -28,6 +38,11 @@ public class Cell {
     }
 
     public boolean isInside(Particle particle){
-        return  rangeX.isInRange(particle.getX()) && rangeY.isInRange(particle.getY());
+        return rangeX.isInRange(particle.getX()) && rangeY.isInRange(particle.getY());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("x:%s y:%s particles:%d",rangeX.toString(), rangeY.toString(), particles.size());
     }
 }

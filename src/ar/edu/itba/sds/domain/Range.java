@@ -22,6 +22,11 @@ public class Range {
     }
 
     public boolean isInRange(Double value){
-        return lowest >= value && value < highest;
+        return lowest <= value && value < highest;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%f,%f)",lowest, highest);
     }
 }
