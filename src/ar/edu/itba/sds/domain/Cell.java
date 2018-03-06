@@ -15,7 +15,7 @@ public class Cell {
         this.rangeY = rangeY;
     }
 
-   /*todo: eliminar esto despues del test del main
+   /*todo: eliminar esto despues del test.xyz del main
    public Cell(List<Particle> particles) {
         setParticles(particles);
     }*/
