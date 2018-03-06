@@ -47,7 +47,7 @@ public class IndexCell {
             }
         }
 
-        //todo: definir vecinos para cada celda
+        //calculo vecinos para cada celda
         for (Integer x = 0; x < M; x++) {
             for (Integer y = 0; y < M; y++) {
                 environment[x][y].setNeigbours(calculateParticleNeighbours(x,y));
