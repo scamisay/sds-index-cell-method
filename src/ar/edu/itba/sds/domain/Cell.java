@@ -1,13 +1,15 @@
 package ar.edu.itba.sds.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Cell {
 
     private Range rangeX;
     private Range rangeY;
-    private List<Cell> neigbours = new ArrayList<>();
+    private Set<Cell> neigbours = new HashSet<>();
     private List<Particle> particles = new ArrayList<>();
 
     public Cell(Range rangeX, Range rangeY) {
@@ -29,11 +31,11 @@ public class Cell {
         return particles;
     }
 
-    public List<Cell> getNeighbours() {
+    public Set<Cell> getNeighbours() {
         return neigbours;
     }
 
-    public void setNeigbours(List<Cell> neigbours) {
+    public void setNeigbours(Set<Cell> neigbours) {
         this.neigbours = neigbours;
     }
 
@@ -44,5 +46,23 @@ public class Cell {
     @Override
     public String toString() {
         return String.format("x:%s y:%s particles:%d",rangeX.toString(), rangeY.toString(), particles.size());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cell cell = (Cell) o;
+
+        if (!rangeX.equals(cell.rangeX)) return false;
+        return rangeY.equals(cell.rangeY);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rangeX.hashCode();
+        result = 31 * result + rangeY.hashCode();
+        return result;
     }
 }

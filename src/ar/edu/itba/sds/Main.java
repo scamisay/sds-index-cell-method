@@ -23,10 +23,11 @@ public class Main {
         List<Particle> particles = Arrays.asList(p1,p2,p3,p4,p5,p6,p7);
         Double L = 5.1;
         Integer M = 2;
+        boolean periodicContourCondition = false;
 
         String printedFile = printFile(particles);
 
-        IndexCell icm = new IndexCell(M,L,2.,particles);
+        IndexCell icm = new IndexCell(M,L,2.,particles,periodicContourCondition);
         Map<Particle, List<Particle>> output = icm.calculate();
 
     }

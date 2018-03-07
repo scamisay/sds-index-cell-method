@@ -1,5 +1,8 @@
 package ar.edu.itba.sds.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Particle {
 
     private Double x;
@@ -45,6 +48,10 @@ public class Particle {
 
     public boolean isCloseEnough(Particle particle, Double maxDistance) {
         return distanceCenterToCenter(particle) <= maxDistance;
+    }
+
+    public List<Particle> getOtherParticlesInCell(){
+        return getCell().getParticles().stream().filter(p -> !p.equals(this)).collect(Collectors.toList());
     }
 
     @Override

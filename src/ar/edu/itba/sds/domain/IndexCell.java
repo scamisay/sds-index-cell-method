@@ -3,6 +3,7 @@ package ar.edu.itba.sds.domain;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 public class IndexCell {
 
@@ -11,12 +12,14 @@ public class IndexCell {
     private Double rc;
     private List<Particle> particles = new ArrayList<>();
     private Cell[][] environment;
+    private boolean periodicContourCondition;
 
-    public IndexCell(Integer m, Double l, Double rc, List<Particle> particles) {
+    public IndexCell(Integer m, Double l, Double rc, List<Particle> particles, boolean periodicContourCondition) {
         M = m;
         L = l;
         this.rc = rc;
         this.particles = particles;
+        this.periodicContourCondition = periodicContourCondition;
 
         initializeEnvironment();
     }
@@ -65,14 +68,40 @@ public class IndexCell {
      * (x,y)   (x+1,y)
      *         (x+1,y-1)
      **/
-    private List<Cell> calculateParticleNeighbours(Integer x, Integer y){
-        return Arrays.asList(
-                environment[x][(y+1)%M],
-                environment[(x+1)%M][(y+1)%M],
-                environment[(x+1)%M][y],
-                environment[(x+1)%M][((y-1)%M)<0?((y-1)%M)+M:(y-1)%M]
-        );
+    private Set<Cell> calculateParticleNeighbours(Integer x, Integer y){
+        Cell cell1, cell2, cell3, cell4;
+        if(periodicContourCondition){
+            cell1 = environment[x][(y + 1) % M];
+            cell2 = environment[(x + 1) % M][(y + 1) % M];
+            cell3 = environment[(x + 1) % M][y];
+            cell4 = environment[(x + 1) % M][((y - 1) % M) < 0 ? ((y - 1) % M) + M : (y - 1) % M];
+        }else{
+            cell1 = nullIfOutOfBounds(x, y+1);
+            cell2 = nullIfOutOfBounds(x + 1,y + 1);
+            cell3 = nullIfOutOfBounds(x + 1,y);
+            cell4 = nullIfOutOfBounds(x + 1,y - 1);
+        }
+
+        return Stream.of(
+                cell1,
+                cell2,
+                cell3,
+                cell4
+                ).filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toCollection(HashSet::new));
     }
+
+    private Cell nullIfOutOfBounds(Integer x, int y) {
+        if(x < 0 || x >= M){
+            return null;
+        }else if(y < 0 || y >= M){
+            return null;
+        }else{
+            return environment[x][y];
+        }
+    }
+
 
     /**
      * traer celdas vecinas
@@ -80,11 +109,15 @@ public class IndexCell {
      * filtrar las particulas que esten a menos de rc de la particle
      */
     private List<Particle> calculateParticleNeighbours(Particle particle){
-        return particle.getCell().getNeighbours().stream()
-                .map(Cell::getParticles)
-                .flatMap(List::stream)
-                .filter(p -> particle.isCloseEnough(p, rc))
-                .collect(Collectors.toList());
+        return Stream.concat(
+                    particle.getCell().getNeighbours().stream()
+                    .map(Cell::getParticles)
+                    .flatMap(List::stream)
+                    .filter(p -> particle.isCloseEnough(p, rc))
+                ,
+                    particle.getOtherParticlesInCell().stream()
+                    .filter(p -> particle.isCloseEnough(p, rc))
+                ).collect(Collectors.toList());
     }
 
 
