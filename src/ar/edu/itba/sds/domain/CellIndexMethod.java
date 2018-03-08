@@ -134,17 +134,4 @@ public class CellIndexMethod {
                 ).collect(Collectors.toList());
     }
 
-/*
-    Particle s = calculated.keySet().iterator().next();
-calculated.get(s).stream().map(p ->p.printParticle()+ " - "+ p.distanceBorderToBorder(s)).collect(Collectors.toList())
-
-
-particle.getCell().getNeighbours().stream()
-                    .map(Cell::getParticles)
-                    .flatMap(List::stream)
-                    .filter(p -> p.isCloseEnough(particle, rc))
-                    .map(p ->p.printParticle()+ " - "+ p.distanceBorderToBorder(particle))
-        .collect(Collectors.toList())
-
-*/
 }
