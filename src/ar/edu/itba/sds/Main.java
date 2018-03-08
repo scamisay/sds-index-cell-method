@@ -36,8 +36,8 @@ public class Main {
         Printer printer = new Printer(particles,L, M,2.,periodicContourCondition,0);
         printer.printFiles();
 
-        MethodComparator mc = new MethodComparator(L, M, 1.);
-        List<MethodComparator.ComparisonResult> r= mc.testOverParticles(100,10,1000);
+        MethodComparator mc = new MethodComparator(20., M, 1.);
+        List<MethodComparator.ComparisonResult> r= mc.testOverParticles(500,100,2000);
         String output = r.stream().map(cr -> cr.toString()).collect(Collectors.joining("\n"));
         System.out.print(output);
     }

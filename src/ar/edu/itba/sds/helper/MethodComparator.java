@@ -17,7 +17,7 @@ public class MethodComparator {
     private Integer M;
     private Double rc;
 
-    private static final Double RADIX = .1;
+    private static final Double RADIX = .25;
 
     public MethodComparator(Double l, Integer m, Double rc) {
         L = l;
