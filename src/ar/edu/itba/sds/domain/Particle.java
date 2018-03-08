@@ -30,7 +30,7 @@ public class Particle {
 
     public Double distanceCenterToCenter(Particle particle){
         Double difx = getX() - particle.getX();
-        Double dify = getX() - particle.getY();
+        Double dify = getY() - particle.getY();
         return Math.sqrt(Math.pow(difx,2)+ Math.pow(dify,2));
     }
 
@@ -47,11 +47,15 @@ public class Particle {
     }
 
     public boolean isCloseEnough(Particle particle, Double maxDistance) {
-        return distanceCenterToCenter(particle) <= maxDistance;
+        return distanceBorderToBorder(particle) <= maxDistance;
     }
 
     public List<Particle> getOtherParticlesInCell(){
         return getCell().getParticles().stream().filter(p -> !p.equals(this)).collect(Collectors.toList());
+    }
+
+    public String printParticle(){
+        return String.format("(%f,%f)", x, y);
     }
 
     @Override

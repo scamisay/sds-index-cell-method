@@ -1,11 +1,13 @@
 package ar.edu.itba.sds.domain;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
-public class IndexCell {
+public class CellIndexMethod {
 
     private Integer M;
     private Double L;
@@ -14,7 +16,9 @@ public class IndexCell {
     private Cell[][] environment;
     private boolean periodicContourCondition;
 
-    public IndexCell(Integer m, Double l, Double rc, List<Particle> particles, boolean periodicContourCondition) {
+    private Duration timeElapsed;
+
+    public CellIndexMethod(Integer m, Double l, Double rc, List<Particle> particles, boolean periodicContourCondition) {
         M = m;
         L = l;
         this.rc = rc;
@@ -59,8 +63,18 @@ public class IndexCell {
     }
 
     public Map<Particle, List<Particle>> calculate(){
-        return particles.stream()
+        Instant b = Instant.now();
+
+        Map<Particle, List<Particle>> output =  particles.stream()
                 .collect(Collectors.toMap(p->p, this::calculateParticleNeighbours));
+
+        Instant e = Instant.now();
+        timeElapsed = Duration.between(b, e);
+        return output;
+    }
+
+    public Duration getTimeElapsed() {
+        return timeElapsed;
     }
 
     /***
@@ -113,12 +127,24 @@ public class IndexCell {
                     particle.getCell().getNeighbours().stream()
                     .map(Cell::getParticles)
                     .flatMap(List::stream)
-                    .filter(p -> particle.isCloseEnough(p, rc))
+                    .filter(p -> p.isCloseEnough(particle, rc))
                 ,
                     particle.getOtherParticlesInCell().stream()
-                    .filter(p -> particle.isCloseEnough(p, rc))
+                    .filter(p -> p.isCloseEnough(particle, rc))
                 ).collect(Collectors.toList());
     }
 
+/*
+    Particle s = calculated.keySet().iterator().next();
+calculated.get(s).stream().map(p ->p.printParticle()+ " - "+ p.distanceBorderToBorder(s)).collect(Collectors.toList())
 
+
+particle.getCell().getNeighbours().stream()
+                    .map(Cell::getParticles)
+                    .flatMap(List::stream)
+                    .filter(p -> p.isCloseEnough(particle, rc))
+                    .map(p ->p.printParticle()+ " - "+ p.distanceBorderToBorder(particle))
+        .collect(Collectors.toList())
+
+*/
 }
