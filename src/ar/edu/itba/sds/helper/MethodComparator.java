@@ -5,6 +5,7 @@ import ar.edu.itba.sds.domain.CellIndexMethod;
 import ar.edu.itba.sds.domain.Particle;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +17,13 @@ public class MethodComparator {
     private Double L;
     private Integer M;
     private Double rc;
+    private Double radix;
 
-    private static final Double RADIX = .25;
-
-    public MethodComparator(Double l, Integer m, Double rc) {
+    public MethodComparator(Double l, Integer m, Double rc, Double radix) {
         L = l;
         M = m;
         this.rc = rc;
+        this.radix = radix;
     }
 
     /**
@@ -31,24 +32,39 @@ public class MethodComparator {
     public List<ComparisonResult> testOverParticles(Integer from, Integer step, Integer to){
         List<ComparisonResult> results = new ArrayList<>();
         for(Integer N = from; N <= to ; N += step){
-            List<Particle> particles = new ParticleGenerator().generate(N, L, RADIX);
-
-            CellIndexMethod cim = new CellIndexMethod(M, L, rc, particles, false);
-            cim.calculate();
-
-            BruteForceMethod bf = new BruteForceMethod(rc, particles, false);
-            bf.calculate();
-
-            results.add(new ComparisonResult(N, cim.getTimeElapsed(), bf.getTimeElapsed()));
+            ComparisonResult result = compareMethods(N, M, L, rc, radix);
+            results.add(result);
         }
         return results;
     }
 
     /**
-     * Hago variar MxM
+     * Hago variar M
      */
-    public void testOverCells(Integer from, Integer step, Integer to){
+    public List<ComparisonResult> testOverCells(Integer from, Integer step, Integer to, Integer N){
+        List<ComparisonResult> results = new ArrayList<>();
+        for(Integer M = from; M <= to ; M += step){
+            ComparisonResult result = compareMethods(N, M, L, rc, radix);
+            results.add(result);
+        }
+        return results;
+    }
 
+    private ComparisonResult compareMethods(Integer N, Integer M, Double L, Double rc, Double radix){
+        List<Particle> particles = new ParticleGenerator().generate(N, L, radix);
+
+        Instant b = Instant.now();
+        CellIndexMethod cim = new CellIndexMethod(M, L, rc, particles, false);
+        cim.calculate();
+        Instant e = Instant.now();
+        Duration timeCIM = Duration.between(b, e);
+
+        BruteForceMethod bf = new BruteForceMethod(rc, particles, false);
+        bf.calculate();
+
+        ComparisonResult result = new ComparisonResult(M, timeCIM, bf.getTimeElapsed());
+        System.out.println(result.toString());
+        return result;
     }
 
     public class ComparisonResult{
@@ -64,7 +80,8 @@ public class MethodComparator {
 
         @Override
         public String toString() {
-            return String.format("%d, %d, %d", variableValue, cim.toMillis(), bf.toMillis());
+            return String.format(" %d",  cim.toMillis());
+            //return String.format("%d, %d, %d", variableValue, cim.toMillis(), bf.toMillis());
         }
     }
 }
