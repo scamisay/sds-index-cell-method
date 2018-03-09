@@ -41,11 +41,6 @@ public class App {
             }
         }
 
-        /*Integer N = 50;
-        Double L = 5.1;
-        Integer M = 2;
-        boolean periodicContourCondition = false;
-*/
         List<Particle> particles = new ParticleGenerator().generate(N, L, RADIX);
         Printer printer = new Printer(particles, L, M, rc, periodicContourCondition, 0);
         printer.printFiles();
