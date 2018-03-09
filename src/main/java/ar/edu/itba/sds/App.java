@@ -7,10 +7,6 @@ import ar.edu.itba.sds.helper.Printer;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Hello world!
- *
- */
 public class App {
     private static final Double RADIX = .1;
 
